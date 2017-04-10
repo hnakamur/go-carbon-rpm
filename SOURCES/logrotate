@@ -1,0 +1,13 @@
+/var/log/go-carbon/*.log {
+        daily
+        missingok
+        rotate 180
+        compress
+        delaycompress
+        notifempty
+        create 644 carbon adm
+        sharedscripts
+        postrotate
+                /usr/bin/systemctl reload go-carbon
+        endscript
+}

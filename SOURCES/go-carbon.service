@@ -1,0 +1,17 @@
+[Unit]
+Description=go-carbon server
+Documentation=https://github.com/lomik/go-carbon
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=carbon
+Group=carbon
+Type=simple
+Restart=on-failure
+ExecStart=/usr/sbin/go-carbon -config /etc/go-carbon.conf
+ExecReload=/bin/kill -HUP $MAINPID
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
