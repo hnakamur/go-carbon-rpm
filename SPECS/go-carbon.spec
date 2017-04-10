@@ -2,6 +2,10 @@
 %define carbon_group carbon
 %define carbon_loggroup adm
 
+%define debug_package %{nil}
+
+%{!?_unitdir: %define _unitdir /usr/lib/systemd/system}
+
 %global commit             e0fae152afccbc0133fb7babe48c4f708456f639
 %global shortcommit        %(c=%{commit}; echo ${c:0:7})
 
@@ -14,10 +18,16 @@ Group:		Development/Tools
 License:	MIT License
 URL:		https://github.com/lomik/go-carbon
 
-# NOTE: We use "git clone" in %prep instead of having tarball here
-# since we need .git directory to run "make submodules" to get
-# dependency packages of go-carbon.
-#Source0:	%{name}.tar.gz
+# Source0 tarball file %{name}.tar.gz was created with the following commands.
+#
+# git clone https://github.com/lomik/go-carbon
+# cd go-carbon
+# git checkout e0fae152afccbc0133fb7babe48c4f708456f639
+# make submodules
+# find . -name '.git' -type d | xargs rm -rf
+# cd ..
+# tar zcf go-carbon.tar.gz go-carbon
+Source0:	%{name}.tar.gz
 
 Source1:	go-carbon.conf
 Source2:	schemas
@@ -26,27 +36,17 @@ Source4:	logrotate
 BuildRoot:      %{name}
 
 BuildRequires:  golang >= 1.8
-BuildRequires:  git
 
 %description
 Golang implementation of Graphite/Carbon server with classic architecture: Agent -> Cache -> Persister
 
 %prep
-%{__rm} -rf %{_builddir}
-
-# NOTE: To use go "get ./..." to install dependencies,
-# we need to have .git directory in carbonapi source directory.
-%{__mkdir} -p %{_builddir}/%{name}/go/src/github.com/lomik
-cd %{_builddir}/%{name}/go/src/github.com/lomik
-git clone https://github.com/lomik/%{name}
-cd %{_builddir}/%{name}/go/src/github.com/lomik/%{name}
-git checkout %{commit}
+%setup -c -n %{_builddir}/%{name}/go/src/github.com/lomik
 
 %build
 export GOPATH=%{_builddir}/%{name}/go:%{_builddir}/%{name}/go/src/github.com/lomik/%{name}/_vendor
 cd %{_builddir}/%{name}/go/src/github.com/lomik/%{name}
-make submodules
-make
+go build
 
 %install
 %{__rm} -rf %{buildroot}
