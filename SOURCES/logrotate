@@ -1,5 +1,6 @@
 /var/log/go-carbon/*.log {
         daily
+        dateext
         missingok
         rotate 180
         compress
