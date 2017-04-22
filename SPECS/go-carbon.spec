@@ -11,7 +11,7 @@
 
 Name:	        go-carbon
 Version:	0.9.1
-Release:	0.2.git%{shortcommit}%{?dist}
+Release:	0.3.git%{shortcommit}%{?dist}
 Summary:	Carbon server for graphite
 
 Group:		Development/Tools
@@ -107,6 +107,9 @@ fi
 %systemd_postun
 
 %changelog
+* Sun Apr 23 2017 <hnakamur@gmail.com> - 0.9.1-0.3.git61f1fa6
+- Fix logrotate for when go-carbon service is stopped
+
 * Tue Apr 11 2017 <hnakamur@gmail.com> - 0.9.1-0.2.git61f1fa6
 - Update to commit 61f1fa6d46c5c48a906d7becaf75bb3a58f7e532
 - Use dateext for logrotate
