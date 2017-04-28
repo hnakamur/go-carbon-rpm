@@ -9,6 +9,6 @@
         create 644 carbon adm
         sharedscripts
         postrotate
-                /usr/bin/systemctl reload go-carbon
+                /usr/bin/systemctl is-active go-carbon && /usr/bin/systemctl reload go-carbon
         endscript
 }
