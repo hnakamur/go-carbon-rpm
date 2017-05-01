@@ -6,12 +6,12 @@
 
 %{!?_unitdir: %define _unitdir /usr/lib/systemd/system}
 
-%global commit             61f1fa6d46c5c48a906d7becaf75bb3a58f7e532
+%global commit             42b9832d13240ff044c86768e8d0dc1f356d9458
 %global shortcommit        %(c=%{commit}; echo ${c:0:7})
 
 Name:	        go-carbon
 Version:	0.9.1
-Release:	0.3.git%{shortcommit}%{?dist}
+Release:	0.4.git%{shortcommit}%{?dist}
 Summary:	Carbon server for graphite
 
 Group:		Development/Tools
@@ -22,9 +22,8 @@ URL:		https://github.com/lomik/go-carbon
 #
 # git clone https://github.com/lomik/go-carbon
 # cd go-carbon
-# git checkout 61f1fa6d46c5c48a906d7becaf75bb3a58f7e532
+# git checkout 42b9832d13240ff044c86768e8d0dc1f356d9458
 # make submodules
-# find . -name '.git' | xargs rm -rf
 # cd ..
 # tar cf - go-carbon | gzip -9 > go-carbon.tar.gz
 Source0:	%{name}.tar.gz
@@ -107,6 +106,9 @@ fi
 %systemd_postun
 
 %changelog
+* Sun Apr 23 2017 <hnakamur@gmail.com> - 0.9.1-0.4.git42b9832
+- Update to commit 42b9832d13240ff044c86768e8d0dc1f356d9458
+
 * Sun Apr 23 2017 <hnakamur@gmail.com> - 0.9.1-0.3.git61f1fa6
 - Fix logrotate for when go-carbon service is stopped
 
