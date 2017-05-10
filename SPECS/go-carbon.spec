@@ -11,7 +11,7 @@
 
 Name:	        go-carbon
 Version:	0.9.1
-Release:	0.5.git%{shortcommit}%{?dist}
+Release:	0.6.git%{shortcommit}%{?dist}
 Summary:	Carbon server for graphite
 
 Group:		Development/Tools
@@ -86,7 +86,10 @@ getent passwd %{carbon_user} >/dev/null || \
 exit 0
 
 %post
-%systemd_post %{name}.service
+if [ $1 -eq 1 ] ; then
+    # Initial installation
+    /usr/bin/systemctl preset %{name}.service >/dev/null 2>&1 || :
+fi
 if [ $1 -eq 1 ]; then
     # Touch and set permisions on default log files on installation
 
@@ -100,14 +103,18 @@ if [ $1 -eq 1 ]; then
 fi
 
 %preun
-%systemd_preun %{name}.service
+if [ $1 -eq 0 ] ; then
+    # Package removal, not upgrade
+    /usr/bin/systemctl --no-reload disable %{name}.service > /dev/null 2>&1 || :
+    /usr/bin/systemctl stop %{name}.service > /dev/null 2>&1 || :
+fi
 
 %postun
-%systemd_postun
+/usr/bin/systemctl daemon-reload >/dev/null 2>&1 || :
 
 %changelog
-* Tue May  9 2017 <hnakamur@gmail.com> - 0.9.1-0.5.gite825d3a
-- Update to commit e825d3aa0bef05b3d64ef9a9d770f62488a65b3a
+* Wed May 10 2017 <hnakamur@gmail.com> - 0.9.1-0.6.gite825d3a
+- Fix post, preun, postun scripts.
 
 * Sun Apr 23 2017 <hnakamur@gmail.com> - 0.9.1-0.4.git42b9832
 - Update to commit 42b9832d13240ff044c86768e8d0dc1f356d9458
