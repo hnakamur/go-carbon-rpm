@@ -1,17 +1,18 @@
 [Unit]
-Description=go-carbon server
+Description=Golang implementation of Graphite/Carbon server.
 Documentation=https://github.com/lomik/go-carbon
-Wants=network-online.target
-After=network-online.target
+After=network.target
 
 [Service]
-User=carbon
-Group=carbon
-Type=simple
-Restart=on-failure
-ExecStart=/usr/sbin/go-carbon -config /etc/go-carbon.conf
+Type=forking
+ExecStart=/usr/bin/go-carbon -config /etc/go-carbon/go-carbon.conf -pidfile /var/run/go-carbon.pid -daemon
 ExecReload=/bin/kill -HUP $MAINPID
-LimitNOFILE=65536
+KillSignal=USR2
+Restart=on-failure
+
+TimeoutStopSec=600
+LimitNOFILE=55555
+LimitMEMLOCK=infinity
 
 [Install]
 WantedBy=multi-user.target
