@@ -6,12 +6,12 @@
 
 %{!?_unitdir: %define _unitdir /usr/lib/systemd/system}
 
-%global commit             e825d3aa0bef05b3d64ef9a9d770f62488a65b3a
-%global shortcommit        %(c=%{commit}; echo ${c:0:7})
+%global commit             v0.10.0-beta1
+# %global shortcommit        %(c=%{commit}; echo ${c:0:7})
 
 Name:	        go-carbon
-Version:	0.9.1
-Release:	0.6.git%{shortcommit}%{?dist}
+Version:	0.10.0
+Release:	0.1.beta1%{?dist}
 Summary:	Carbon server for graphite
 
 Group:		Development/Tools
@@ -22,16 +22,17 @@ URL:		https://github.com/lomik/go-carbon
 #
 # git clone https://github.com/lomik/go-carbon
 # cd go-carbon
-# git checkout e825d3aa0bef05b3d64ef9a9d770f62488a65b3a
+# git checkout v0.10.0-beta1
 # make submodules
 # cd ..
 # tar cf - go-carbon | gzip -9 > go-carbon.tar.gz
 Source0:	%{name}.tar.gz
 
 Source1:	go-carbon.conf
-Source2:	schemas
-Source3:	go-carbon.service
-Source4:	logrotate
+Source2:	storage-schemas.conf
+Source3:	storage-aggregation.conf
+Source4:	go-carbon.service
+Source5:	logrotate
 BuildRoot:      %{name}
 
 BuildRequires:  golang >= 1.8
@@ -49,32 +50,34 @@ go build
 
 %install
 %{__rm} -rf %{buildroot}
-%{__mkdir} -p %{buildroot}%{_sbindir}
-%{__mkdir} -p %{buildroot}%{_sysconfdir}
-%{__mkdir} -p %{buildroot}/data/graphite/whisper
+%{__mkdir} -p %{buildroot}%{_bindir}
+%{__mkdir} -p %{buildroot}%{_sysconfdir}/%{name}
+%{__mkdir} -p %{buildroot}/var/lib/graphite/whisper
 %{__mkdir} -p %{buildroot}%{_localstatedir}/log/%{name}
 %{__mkdir} -p %{buildroot}%{_unitdir}
 
 %{__install} -pD -m 755 %{_builddir}/%{name}/go/src/github.com/lomik/%{name}/%{name} \
-    %{buildroot}/%{_sbindir}/%{name}
-%{__install} -pD -m 644 %{SOURCE1} %{buildroot}/%{_sysconfdir}/%{name}.conf
-%{__install} -pD -m 644 %{SOURCE2} %{buildroot}/data/graphite/schemas
-%{__install} -pD -m 644 %{SOURCE3} %{buildroot}%{_unitdir}/%{name}.service
+    %{buildroot}/%{_bindir}/%{name}
+%{__install} -pD -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/%{name}/%{name}.conf
+%{__install} -pD -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/%{name}/storage-schemas.conf
+%{__install} -pD -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/%{name}/storage-aggregation.conf
+%{__install} -pD -m 644 %{SOURCE4} %{buildroot}%{_unitdir}/%{name}.service
 
 # install log rotation stuff
 %{__mkdir} -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-%{__install} -m 644 -p %{SOURCE4} \
+%{__install} -m 644 -p %{SOURCE5} \
     $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/%{name}
 
 %files
 %defattr(-,root,root,-)
-%{_sbindir}/%{name}
-%config(noreplace) %{_sysconfdir}/%{name}.conf
-%config(noreplace) /data/graphite/schemas
+%{_bindir}/%{name}
+%config(noreplace) %{_sysconfdir}/%{name}/%{name}.conf
+%config(noreplace) %{_sysconfdir}/%{name}/storage-schemas.conf
+%config(noreplace) %{_sysconfdir}/%{name}/storage-aggregation.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %attr(0755,root,root) %dir %{_localstatedir}/log/%{name}
-%attr(0755,root,root) %dir /data/graphite
-%attr(0755,%{carbon_user},%{carbon_group}) %dir /data/graphite/whisper
+%attr(0755,root,root) %dir /var/lib/graphite
+%attr(0755,%{carbon_user},%{carbon_group}) %dir /var/lib/graphite/whisper
 %{_unitdir}/%{name}.service
 
 %pre
@@ -113,6 +116,10 @@ fi
 /usr/bin/systemctl daemon-reload >/dev/null 2>&1 || :
 
 %changelog
+* Sun May 21 2017 <hnakamur@gmail.com> - 0.10.0-0.1.beta1
+- 0.10.0-beta1
+- Adjust file paths to the same as the upstream rpm
+
 * Wed May 10 2017 <hnakamur@gmail.com> - 0.9.1-0.6.gite825d3a
 - Fix post, preun, postun scripts.
 
