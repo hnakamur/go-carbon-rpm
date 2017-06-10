@@ -6,12 +6,12 @@
 
 %{!?_unitdir: %define _unitdir /usr/lib/systemd/system}
 
-%global commit             a31d03e67d36941482ae041676e3afe8df898db4
+%global commit             6fbd091b342316e790fe484f861b51252075525b
 %global shortcommit        %(c=%{commit}; echo ${c:0:7})
 
 Name:	        go-carbon
 Version:	0.10.0
-Release:	0.3.%{shortcommit}%{?dist}
+Release:	0.4.%{shortcommit}%{?dist}
 Summary:	Carbon server for graphite
 
 Group:		Development/Tools
@@ -22,7 +22,7 @@ URL:		https://github.com/lomik/go-carbon
 #
 # git clone https://github.com/lomik/go-carbon
 # cd go-carbon
-# git checkout a31d03e67d36941482ae041676e3afe8df898db4
+# git checkout 6fbd091b342316e790fe484f861b51252075525b
 # make submodules
 # cd ..
 # tar cf - go-carbon | gzip -9 > go-carbon.tar.gz
@@ -116,6 +116,9 @@ fi
 /usr/bin/systemctl daemon-reload >/dev/null 2>&1 || :
 
 %changelog
+* Sat Jun 10 2017 <hnakamur@gmail.com> - 0.10.0-0.4.6fbd091b3
+- Update to commit 6fbd091b342316e790fe484f861b51252075525b
+
 * Fri Jun  9 2017 <hnakamur@gmail.com> - 0.10.0-0.3.a31d03e67
 - Update to commit a31d03e67d36941482ae041676e3afe8df898db4
 
