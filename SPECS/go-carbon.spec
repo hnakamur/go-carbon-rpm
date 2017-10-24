@@ -6,11 +6,11 @@
 
 %{!?_unitdir: %define _unitdir /usr/lib/systemd/system}
 
-%global commit             33f0f3e02cdd231016a57b152d9c118edb60f63f
+%global commit             9f7838b53e435435810a8c8c2c638d8c570182d3
 %global shortcommit        %(c=%{commit}; echo ${c:0:7})
 
 Name:	        go-carbon
-Version:	0.10.0
+Version:	0.11.0
 Release:	2.%{shortcommit}%{?dist}
 Summary:	Carbon server for graphite
 
@@ -22,11 +22,11 @@ URL:		https://github.com/lomik/go-carbon
 #
 # git clone https://github.com/lomik/go-carbon
 # cd go-carbon
-# git checkout 33f0f3e02cdd231016a57b152d9c118edb60f63f
+# git checkout 9f7838b53e435435810a8c8c2c638d8c570182d3
 # make submodules
 # cd ..
-# tar cf - go-carbon | gzip -9 > go-carbon.tar.gz
-Source0:	%{name}.tar.gz
+# tar cf - go-carbon | xz -9 > go-carbon.tar.xz
+Source0:	%{name}.tar.xz
 
 Source1:	go-carbon.conf
 Source2:	storage-schemas.conf
@@ -36,6 +36,7 @@ Source5:	logrotate
 BuildRoot:      %{name}
 
 BuildRequires:  golang >= 1.8
+BuildRequires:  xz
 
 %description
 Golang implementation of Graphite/Carbon server with classic architecture: Agent -> Cache -> Persister
@@ -116,6 +117,11 @@ fi
 /usr/bin/systemctl daemon-reload >/dev/null 2>&1 || :
 
 %changelog
+* Wed Oct 25 2017 <hnakamur@gmail.com> - 0.11.0-2.9f7838b
+- Update to commit 9f7838b53e435435810a8c8c2c638d8c570182d3
+- Use xz to meet requirement on github for size of a file
+  (go-carbon.tar.xz) must not exceed 100MB.
+
 * Fri Jun 16 2017 <hnakamur@gmail.com> - 0.10.0-2.33f0f3e
 - Update to commit 33f0f3e02cdd231016a57b152d9c118edb60f63f
 
