@@ -6,12 +6,17 @@
 
 %{!?_unitdir: %define _unitdir /usr/lib/systemd/system}
 
-%global commit             9f7838b53e435435810a8c8c2c638d8c570182d3
+# prerelease seq number
+%global prereleaseseq      1
+
+%global commit             d53db4c3d851ac8203b175009b434da991a4aa2b
 %global shortcommit        %(c=%{commit}; echo ${c:0:7})
 
 Name:	        go-carbon
-Version:	0.11.0
-Release:	2.%{shortcommit}%{?dist}
+Version:	0.12.0
+# TODO: Modify Release when we switch from prerelease to release version.
+# https://fedoraproject.org/wiki/Packaging:Versioning
+Release:	0.%{prereleaseseq}.%{shortcommit}%{?dist}
 Summary:	Carbon server for graphite
 
 Group:		Development/Tools
@@ -22,7 +27,7 @@ URL:		https://github.com/lomik/go-carbon
 #
 # git clone https://github.com/lomik/go-carbon
 # cd go-carbon
-# git checkout 9f7838b53e435435810a8c8c2c638d8c570182d3
+# git checkout d53db4c3d851ac8203b175009b434da991a4aa2b
 # make submodules
 # cd ..
 # tar cf - go-carbon | xz -9 > go-carbon.tar.xz
@@ -117,6 +122,9 @@ fi
 /usr/bin/systemctl daemon-reload >/dev/null 2>&1 || :
 
 %changelog
+* Wed Jan 31 2018 <hnakamur@gmail.com> - 0.12.0-0.1.d53db4c
+* Update to 0.12.0-rc1 d53db4c3d851ac8203b175009b434da991a4aa2b
+
 * Wed Oct 25 2017 <hnakamur@gmail.com> - 0.11.0-2.9f7838b
 - Update to commit 9f7838b53e435435810a8c8c2c638d8c570182d3
 - Use xz to meet requirement on github for size of a file
